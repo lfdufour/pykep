@@ -58,6 +58,24 @@ public:
 		: m_mass(mass_),m_thrust(thrust_),m_isp(isp_), m_AT(AT_), m_BT(BT_), m_maxP(maxP_), m_minP(minP_), m_Pmargin(Pmargin_) {}
 	double get_mass() const {return m_mass;}
 	double get_thrust() const {return m_thrust;}
+	double get_isp() const {return m_isp;}
+	double get_AT() const {return m_AT;}
+	double get_BT() const {return m_BT;}
+	double get_maxP() const {return m_maxP;}
+	double get_minP() const {return m_minP;}
+	double get_P1AU() const {return m_P1AU;}
+	double get_Pmargin() const {return m_Pmargin;}
+	void set_mass(const double _mass) {m_mass=_mass;}
+	void set_thrust(const double _thrust) {m_thrust=_thrust;}
+	void set_isp(const double _isp) {m_isp=_isp;}
+	void set_AT(const double _AT) {m_AT=_AT;}
+	void set_BT(const double _BT) {m_BT=_BT;}
+	void set_minP(const double _minP) {m_minP=_minP;}
+	void set_maxP(const double maxP) {m_maxP=_maxP;}
+	void set_P1AU(const double _P1AU) {m_P1AU=_P1AU;}
+	void set_Pmargin(const double _Pmargin) {m_Pmargin=_Pmargin;}
+	
+	// Function implementing thrust as a function of available power
 	double get_thrust_electricSolar(double distanceSun) const {
 		double P = std::max(m_P1AU/(distanceSun-1.0)/(distanceSun - 1.0)-m_Pmargin,0.0);
 		double thrustElectric = 0.0;
@@ -72,10 +90,7 @@ public:
 		thrustElectric  = m_AT + m_BT*P;
 		return thrustElectric ; 
 	}
-	double get_isp() const {return m_isp;}
-	void set_mass(const double _mass) {m_mass=_mass;}
-	void set_thrust(const double _thrust) {m_thrust=_thrust;}
-	void set_isp(const double _isp) {m_isp=_isp;}
+	
 	std::string human_readable() const;
 private:
 // Serialization code
