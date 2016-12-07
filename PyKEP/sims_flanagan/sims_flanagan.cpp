@@ -297,6 +297,11 @@ BOOST_PYTHON_MODULE(_sims_flanagan) {
 			"Example::\n\n"
 			" l.high_fidelity(True)\n"
 		)
+		.add_property("solar_powered", &kep_toolbox::sims_flanagan::leg::get_solar_powered, &kep_toolbox::sims_flanagan::leg::set_solar_powered,
+			"If True propulsion is solar based, and thus thrust depends on distance to sun\n\n"
+			"Example::\n\n"
+			" l.solar_powered(True)\n"
+		)
 		.def("mismatch_constraints", &get_mismatch_wrapper,
 			"Returns a tuple containing the state mismatch of the leg x,y,z,vx,vy,vz,m (needs to be all zeros for the leg to be feasible)\n\n"
 			"Example::\n\n"
