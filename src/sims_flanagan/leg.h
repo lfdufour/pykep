@@ -30,6 +30,7 @@
 #include <boost/type_traits/is_same.hpp>
 #include <iterator>
 #include <vector>
+#include <math.h>       /* sqrt */
 #include "spacecraft.h"
 #include "../core_functions/array3D_operations.h"
 #include "../core_functions/propagate_lagrangian.h"
@@ -78,7 +79,7 @@ public:
 	* Default constructor. Constructs a meaningless leg that will need to be properly initialized
 	* using the various setters....
 	*/
-	leg():t_i(),x_i(),throttles(),t_f(),x_f(),m_sc(),m_mu(0),m_hf(false),m_tol(-10) {}
+	leg():t_i(),x_i(),throttles(),t_f(),x_f(),m_sc(),m_mu(0),m_hf(false),m_sp(false), m_tol(-10) {}
 
 	/// Constructs the leg from epochs, sc_states and cartesian components of throttles
 	/**
@@ -93,7 +94,7 @@ public:
 	*
 	*/
 	leg(const epoch& epoch_i, const sc_state& state_i, const std::vector<double>& thrott,
-	    const epoch& epoch_f, const sc_state& state_f, const spacecraft& sc, const double mu):m_sc(sc),m_hf(false),m_tol(-10) {
+	    const epoch& epoch_f, const sc_state& state_f, const spacecraft& sc, const double mu):m_sc(sc),m_hf(false), m_sp(false), m_tol(-10) {
 		set_leg(epoch_i, state_i,thrott.begin(),thrott.end(),epoch_f, state_f,mu);
 	}
 
@@ -288,7 +289,12 @@ public:
 	*/
 	void set_high_fidelity(bool state) { m_hf = state; }
 
-
+	
+	/// Sets the solar propulstion state
+	/**
+	* Activates the solar powered propulsion model
+	*/
+	void set_solar_powered(bool state) {m_sp = state;}
 	/** @name Getters*/
 	//@{
 
@@ -362,6 +368,7 @@ public:
 	*/
 	const sc_state& get_x_i() const {return x_i;}
 	bool get_high_fidelity() const { return m_hf; }
+	bool set_solar_powered() {return m_sp;}
 	//@}
 
 	/** @name Leg Feasibility*/
@@ -398,7 +405,12 @@ protected:
 		const int n_seg_fwd = (n_seg + 1) / 2, n_seg_back = n_seg / 2;
 
 		//Aux variables
-		double max_thrust = m_sc.get_thrust();
+		if(!m_sp){
+			double max_thrust = m_sc.get_thrust(); 
+		}else{
+			double max_thrust = 0;
+			double dSun = 0;
+		}
 		double isp = m_sc.get_isp();
 		double norm_dv;
 		array3D dv;
@@ -411,13 +423,21 @@ protected:
 		//Forward Propagation
 		double current_time_fwd = t_i.mjd2000() * ASTRO_DAY2SEC;
 		for (int i = 0; i < n_seg_fwd; i++) {
+			if(m_sp){
+				// calculate low-thrust sun-powered max thurst based on sun distance at the beginning of the leg (forwards) to be coherent with taylor
+				dSun = rfwd[0]*rfwd[0]+rfwd[1]*rfwd[1]+rfwd[2]*rfwd[2];
+				dSun = sqrt(dSun);
+			}
+			max_thrust = m_sc.get_thrust_electricSolar(dSun);
+			
 			double thrust_duration = (throttles[i].get_end().mjd2000() -
 						  throttles[i].get_start().mjd2000()) * ASTRO_DAY2SEC;
 			double manouver_time = (throttles[i].get_start().mjd2000() +
 						throttles[i].get_end().mjd2000()) / 2. * ASTRO_DAY2SEC;
 			propagate_lagrangian(rfwd, vfwd, manouver_time - current_time_fwd, m_mu);
 			current_time_fwd = manouver_time;
-
+			
+			
 			for (int j=0;j<3;j++){
 				dv[j] = max_thrust / mfwd * thrust_duration * throttles[i].get_value()[j];
 			}
@@ -437,6 +457,13 @@ protected:
 		//Backward Propagation
 		double current_time_back = t_f.mjd2000() * ASTRO_DAY2SEC;
 		for (int i = 0; i < n_seg_back; i++) {
+			if(m_sp){
+				// calculate low-thrust sun-powered max thurst based on sun distance at the end of the leg (backwards) to be coherent with taylor
+				dSun = rback[0]*rback[0]+rback[1]*rback[1]+rback[2]*rback[2];
+				dSun = sqrt(dSun);
+			}
+			max_thrust = m_sc.get_thrust_electricSolar(dSun);
+			
 			double thrust_duration = (throttles[throttles.size() - i - 1].get_end().mjd2000() -
 						  throttles[throttles.size() - i - 1].get_start().mjd2000()) * ASTRO_DAY2SEC;
 			double manouver_time = (throttles[throttles.size() - i - 1].get_start().mjd2000() +
@@ -475,7 +502,13 @@ protected:
 		const int n_seg_fwd = (n_seg + 1) / 2, n_seg_back = n_seg / 2;
 
 		//Aux variables
-		double max_thrust = m_sc.get_thrust();
+		if(!m_sp){
+			double max_thrust = m_sc.get_thrust(); 
+		}else{
+			double max_thrust = 0;
+			double dSun = 0;
+		}
+		
 		double veff = m_sc.get_isp()*ASTRO_G0;
 		array3D thrust;
 
@@ -486,6 +519,13 @@ protected:
 
 		//Forward Propagation
 		for (int i = 0; i < n_seg_fwd; i++) {
+			if(m_sp){
+				// calculate low-thrust sun-powered max thurst based on sun distance at the end of the leg (forwards)
+				dSun = rfwd[0]*rfwd[0]+rfwd[1]*rfwd[1]+rfwd[2]*rfwd[2];
+				dSun = sqrt(dSun);
+			}
+			max_thrust = m_sc.get_thrust_electricSolar(dSun);
+			
 			double thrust_duration = (throttles[i].get_end().mjd2000() -
 						  throttles[i].get_start().mjd2000()) * ASTRO_DAY2SEC;
 
@@ -502,6 +542,13 @@ protected:
 
 		//Backward Propagation
 		for (int i = 0; i < n_seg_back; i++) {
+			if(m_sp){
+				// calculate low-thrust sun-powered max thurst based on sun distance at the end of the leg (backwards)
+				dSun = rback[0]*rback[0]+rback[1]*rback[1]+rback[2]*rback[2];
+				dSun = sqrt(dSun);
+			}
+			max_thrust = m_sc.get_thrust_electricSolar(dSun);
+			
 			double thrust_duration = (throttles[throttles.size() - i - 1].get_end().mjd2000() -
 						  throttles[throttles.size() - i - 1].get_start().mjd2000()) * ASTRO_DAY2SEC;
 			for (int j=0;j<3;j++){
@@ -593,6 +640,7 @@ private:
 			ar & m_mu;
 			ar & m_hf;
 			ar & m_tol;
+			ar & m_sp;
 		}
 // Serialization code (END)
 		epoch t_i;
@@ -603,6 +651,7 @@ private:
 		spacecraft m_sc;
 		double m_mu;
 		bool m_hf;
+		bool m_sp; // solar powered ?
 		int m_tol;
 	};
 
