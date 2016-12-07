@@ -71,13 +71,13 @@ public:
 	void set_AT(const double _AT) {m_AT=_AT;}
 	void set_BT(const double _BT) {m_BT=_BT;}
 	void set_minP(const double _minP) {m_minP=_minP;}
-	void set_maxP(const double maxP) {m_maxP=_maxP;}
+	void set_maxP(const double _maxP) {m_maxP=_maxP;}
 	void set_P1AU(const double _P1AU) {m_P1AU=_P1AU;}
 	void set_Pmargin(const double _Pmargin) {m_Pmargin=_Pmargin;}
 	
 	// Function implementing thrust as a function of available power
 	double get_thrust_electricSolar(double distanceSun) const {
-		double P = std::max(m_P1AU/(distanceSun-1.0)/(distanceSun - 1.0)-m_Pmargin,0.0);
+		double P = std::max(m_P1AU/(distanceSun)/(distanceSun)-m_Pmargin,0.0);
 		double thrustElectric = 0.0;
 		if(P<=m_minP){
 			thrustElectric = 0.0;
