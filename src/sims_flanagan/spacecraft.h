@@ -55,7 +55,7 @@ public:
 	spacecraft(const double &mass_, const double &thrust_, const double &isp_,
 		  const double &AT_, const double &BT_, const double &maxP_,const double &minP_,
 		  const double &P1AU_, const double &Pmargin_) 
-		: m_mass(mass_),m_thrust(thrust_),m_isp(isp_), m_AT(AT_), m_BT(BT_), m_maxP(maxP_), m_minP(minP_), m_Pmargin(Pmargin_) {}
+		: m_mass(mass_),m_thrust(thrust_),m_isp(isp_), m_AT(AT_), m_BT(BT_), m_maxP(maxP_), m_minP(minP_),m_P1AU(P1AU_), m_Pmargin(Pmargin_) {}
 	double get_mass() const {return m_mass;}
 	double get_thrust() const {return m_thrust;}
 	double get_isp() const {return m_isp;}
@@ -83,7 +83,7 @@ public:
 			thrustElectric = 0.0;
 			return thrustElectric;
 		}else if(P>m_maxP){
-			P = m_Pmax;
+			P = m_maxP;
 		}else{
 			P = P;
 		}
@@ -106,7 +106,7 @@ private:
 		ar &  m_maxP;
 		ar &  m_minP;
 		ar &  m_P1AU;
-		ar &  m_Pmargin
+		ar &  m_Pmargin;
 	}
 // Serialization code (END)
 	double m_mass;
