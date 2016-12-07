@@ -79,6 +79,8 @@ BOOST_PYTHON_MODULE(_sims_flanagan) {
 			"Examples::\n\n"
 			" sc = sims_flanagan.spacecraft(4500,0.05,2500)"
 		))
+		.def(init<const double &, const double &, const double &, const double &, const double &, const double &,const double &,const double &, const double &>(
+		"PyKEP.sims_flanagan.spacecraft(mass,thrust,isp)\n\n"))
 		.def("__repr__", &kep_toolbox::sims_flanagan::spacecraft::human_readable)
 		.add_property("mass",&kep_toolbox::sims_flanagan::spacecraft::get_mass, &kep_toolbox::sims_flanagan::spacecraft::set_mass,
 			"The spacecraft mass\n\n"
@@ -98,6 +100,30 @@ BOOST_PYTHON_MODULE(_sims_flanagan) {
 			"  T = sc.isp"
 			"  sc.isp = 2000"
 			)
+		.add_property("AT",&kep_toolbox::sims_flanagan::spacecraft::get_AT, &kep_toolbox::sims_flanagan::spacecraft::set_AT,
+			"The spacecraft propulsion system thrust constant A\n\n"
+			"Example::\n\n"
+			"  a = sc.AT"
+			"  sc.AT = 0.0015"
+		)
+		.add_property("BT",&kep_toolbox::sims_flanagan::spacecraft::get_BT, &kep_toolbox::sims_flanagan::spacecraft::set_BT,
+			"The spacecraft propulsion system thrust constant B\n\n"
+			"Example::\n\n"
+			"  b = sc.BT"
+			"  sc.isp = 0.000045"
+		)
+		.add_property("maxP",&kep_toolbox::sims_flanagan::spacecraft::get_maxP, &kep_toolbox::sims_flanagan::spacecraft::set_maxP,
+			"The spacecraft propulsion system maximum input power\n\n"
+		)
+		.add_property("minP",&kep_toolbox::sims_flanagan::spacecraft::get_minP, &kep_toolbox::sims_flanagan::spacecraft::set_minP,
+			"The spacecraft propulsion system minimum input power\n\n"
+		)
+		.add_property("P1AU",&kep_toolbox::sims_flanagan::spacecraft::get_P1AU, &kep_toolbox::sims_flanagan::spacecraft::set_P1AU,
+			"The spacecraft electrical power at 1 AU\n\n"
+		)
+		.add_property("Pmargin",&kep_toolbox::sims_flanagan::spacecraft::get_Pmargin, &kep_toolbox::sims_flanagan::spacecraft::set_Pmargin,
+			"The spacecraft power that cannot be given to the propulsion system (internal electrical consumption)\n\n"
+		)
 		.def_pickle(python_class_pickle_suite<kep_toolbox::sims_flanagan::spacecraft>())
 		.def(init<>());
 
