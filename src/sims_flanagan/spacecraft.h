@@ -77,17 +77,22 @@ public:
 	
 	// Function implementing thrust as a function of available power
 	double get_thrust_electricSolar(double distanceSun) const {
-		double P = std::max(m_P1AU/(distanceSun)/(distanceSun)-m_Pmargin,0.0);
+		// If necessary, convert the distance in AU -> detected if distance is greater than 0.1AU
+		double distanceAU = distanceSun;
+		if(distanceSun > 14959787069.10){
+			distanceAU = distanceSun/149597870691.0;
+		}
+		double P = std::max(m_P1AU/(distanceAU)/(distanceAU)-m_Pmargin,0.0);
 		double thrustElectric = 0.0;
 		if(P<=m_minP){
 			thrustElectric = 0.0;
 			return thrustElectric;
-		}else if(P>m_maxP){
+		}else if(P>=m_maxP){
 			P = m_maxP;
 		}else{
 			P = P;
 		}
-		thrustElectric  = m_AT + m_BT*P;
+		thrustElectric  = m_AT*P + m_BT;
 		return thrustElectric ; 
 	}
 	
