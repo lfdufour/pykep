@@ -31,6 +31,7 @@
 #include <iterator>
 #include <vector>
 #include <math.h>       /* sqrt */
+//#include <iostream> // for cout
 #include "spacecraft.h"
 #include "../core_functions/array3D_operations.h"
 #include "../core_functions/propagate_lagrangian.h"
@@ -368,7 +369,7 @@ public:
 	*/
 	const sc_state& get_x_i() const {return x_i;}
 	bool get_high_fidelity() const { return m_hf; }
-	bool set_solar_powered() {return m_sp;}
+	bool get_solar_powered() {return m_sp;}
 	//@}
 
 	/** @name Leg Feasibility*/
@@ -405,12 +406,13 @@ protected:
 		const int n_seg_fwd = (n_seg + 1) / 2, n_seg_back = n_seg / 2;
 
 		//Aux variables
+		double max_thrust =0;
 		if(!m_sp){
-			double max_thrust = m_sc.get_thrust(); 
+			max_thrust = m_sc.get_thrust(); 
 		}else{
-			double max_thrust = 0;
-			double dSun = 0;
+			max_thrust = 0;
 		}
+		double dSun = 0;
 		double isp = m_sc.get_isp();
 		double norm_dv;
 		array3D dv;
@@ -427,8 +429,9 @@ protected:
 				// calculate low-thrust sun-powered max thurst based on sun distance at the beginning of the leg (forwards) to be coherent with taylor
 				dSun = rfwd[0]*rfwd[0]+rfwd[1]*rfwd[1]+rfwd[2]*rfwd[2];
 				dSun = sqrt(dSun);
+				max_thrust = m_sc.get_thrust_electricSolar(dSun);
+				//std::cout <<"max thrust = " << max_thrust  << " at " << dSun <<"AU"<< ".\n";
 			}
-			max_thrust = m_sc.get_thrust_electricSolar(dSun);
 			
 			double thrust_duration = (throttles[i].get_end().mjd2000() -
 						  throttles[i].get_start().mjd2000()) * ASTRO_DAY2SEC;
@@ -461,8 +464,8 @@ protected:
 				// calculate low-thrust sun-powered max thurst based on sun distance at the end of the leg (backwards) to be coherent with taylor
 				dSun = rback[0]*rback[0]+rback[1]*rback[1]+rback[2]*rback[2];
 				dSun = sqrt(dSun);
+				max_thrust = m_sc.get_thrust_electricSolar(dSun);
 			}
-			max_thrust = m_sc.get_thrust_electricSolar(dSun);
 			
 			double thrust_duration = (throttles[throttles.size() - i - 1].get_end().mjd2000() -
 						  throttles[throttles.size() - i - 1].get_start().mjd2000()) * ASTRO_DAY2SEC;
@@ -502,12 +505,13 @@ protected:
 		const int n_seg_fwd = (n_seg + 1) / 2, n_seg_back = n_seg / 2;
 
 		//Aux variables
+		double max_thrust = 0;
 		if(!m_sp){
-			double max_thrust = m_sc.get_thrust(); 
+			max_thrust = m_sc.get_thrust(); 
 		}else{
-			double max_thrust = 0;
-			double dSun = 0;
+			max_thrust = 0;
 		}
+		double dSun = 0;
 		
 		double veff = m_sc.get_isp()*ASTRO_G0;
 		array3D thrust;
@@ -523,8 +527,8 @@ protected:
 				// calculate low-thrust sun-powered max thurst based on sun distance at the end of the leg (forwards)
 				dSun = rfwd[0]*rfwd[0]+rfwd[1]*rfwd[1]+rfwd[2]*rfwd[2];
 				dSun = sqrt(dSun);
+				max_thrust = m_sc.get_thrust_electricSolar(dSun);
 			}
-			max_thrust = m_sc.get_thrust_electricSolar(dSun);
 			
 			double thrust_duration = (throttles[i].get_end().mjd2000() -
 						  throttles[i].get_start().mjd2000()) * ASTRO_DAY2SEC;
@@ -546,8 +550,8 @@ protected:
 				// calculate low-thrust sun-powered max thurst based on sun distance at the end of the leg (backwards)
 				dSun = rback[0]*rback[0]+rback[1]*rback[1]+rback[2]*rback[2];
 				dSun = sqrt(dSun);
+				max_thrust = m_sc.get_thrust_electricSolar(dSun);
 			}
-			max_thrust = m_sc.get_thrust_electricSolar(dSun);
 			
 			double thrust_duration = (throttles[throttles.size() - i - 1].get_end().mjd2000() -
 						  throttles[throttles.size() - i - 1].get_start().mjd2000()) * ASTRO_DAY2SEC;
