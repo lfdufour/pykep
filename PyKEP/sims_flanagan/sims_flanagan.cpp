@@ -124,6 +124,7 @@ BOOST_PYTHON_MODULE(_sims_flanagan) {
 		.add_property("Pmargin",&kep_toolbox::sims_flanagan::spacecraft::get_Pmargin, &kep_toolbox::sims_flanagan::spacecraft::set_Pmargin,
 			"The spacecraft power that cannot be given to the propulsion system (internal electrical consumption)\n\n"
 		)
+		.def("get_thrust_electricSolar", &kep_toolbox::sims_flanagan::spacecraft::get_thrust_electricSolar, "get max thrust at given distance in AU")	
 		.def_pickle(python_class_pickle_suite<kep_toolbox::sims_flanagan::spacecraft>())
 		.def(init<>());
 
@@ -295,6 +296,11 @@ BOOST_PYTHON_MODULE(_sims_flanagan) {
 			"If True propagation is not impulsive, but continuous\n\n"
 			"Example::\n\n"
 			" l.high_fidelity(True)\n"
+		)
+		.add_property("solar_powered", &kep_toolbox::sims_flanagan::leg::get_solar_powered, &kep_toolbox::sims_flanagan::leg::set_solar_powered,
+			"If True propulsion is solar based, and thus thrust depends on distance to sun\n\n"
+			"Example::\n\n"
+			" l.solar_powered(True)\n"
 		)
 		.def("mismatch_constraints", &get_mismatch_wrapper,
 			"Returns a tuple containing the state mismatch of the leg x,y,z,vx,vy,vz,m (needs to be all zeros for the leg to be feasible)\n\n"
