@@ -125,6 +125,8 @@ BOOST_PYTHON_MODULE(_sims_flanagan) {
 			"The spacecraft power that cannot be given to the propulsion system (internal electrical consumption)\n\n"
 		)
 		.def("get_thrust_electricSolar", &kep_toolbox::sims_flanagan::spacecraft::get_thrust_electricSolar, "get max thrust at given distance in AU")	
+		.def("get_totalPower",  &kep_toolbox::sims_flanagan::spacecraft::get_totalPower)
+		.def("get_powerThrust",  &kep_toolbox::sims_flanagan::spacecraft::get_powerThrust)
 		.def_pickle(python_class_pickle_suite<kep_toolbox::sims_flanagan::spacecraft>())
 		.def(init<>());
 

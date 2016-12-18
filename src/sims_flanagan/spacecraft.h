@@ -95,6 +95,22 @@ public:
 		thrustElectric  = m_AT*P + m_BT;
 		return thrustElectric ; 
 	}
+
+	// Function returning, for a given position, the available total solar power
+	double get_totalPower(double distanceSun) const{
+		double distanceAU = distanceSun;
+		if(distanceSun > 14959787069.10){
+			distanceAU = distanceSun/149597870691.0;
+		}
+		double P = m_P1AU/(distanceAU)/(distanceAU);
+		return P;
+	}
+
+	// Function returning, for a given thrust, the power required by the motors
+	double get_powerThrust(double thrust) const{
+		double P = (thrust -m_BT)/m_AT;
+		return P;
+	}
 	
 	std::string human_readable() const;
 private:
