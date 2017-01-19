@@ -65,6 +65,7 @@ public:
 	double get_minP() const {return m_minP;}
 	double get_P1AU() const {return m_P1AU;}
 	double get_Pmargin() const {return m_Pmargin;}
+	double get_DutyCycle() const {return m_DutyCycle;}
 	void set_mass(const double _mass) {m_mass=_mass;}
 	void set_thrust(const double _thrust) {m_thrust=_thrust;}
 	void set_isp(const double _isp) {m_isp=_isp;}
@@ -74,6 +75,7 @@ public:
 	void set_maxP(const double _maxP) {m_maxP=_maxP;}
 	void set_P1AU(const double _P1AU) {m_P1AU=_P1AU;}
 	void set_Pmargin(const double _Pmargin) {m_Pmargin=_Pmargin;}
+	void set_DutyCycle(const double _DutyCycle) {m_DutyCycle = _DutyCycle;} 
 	
 	// Function implementing thrust as a function of available power
 	double get_thrust_electricSolar(double distanceSun) const {
@@ -92,7 +94,8 @@ public:
 		}else{
 			P = P;
 		}
-		thrustElectric  = m_AT*P + m_BT;
+		// Taking into account the duty cycle
+		thrustElectric  = m_DutyCycle * (m_AT*P + m_BT);
 		return thrustElectric ; 
 	}
 
@@ -128,6 +131,7 @@ private:
 		ar &  m_minP;
 		ar &  m_P1AU;
 		ar &  m_Pmargin;
+		ar & m_DutyCycle;
 	}
 // Serialization code (END)
 	double m_mass;
@@ -139,6 +143,7 @@ private:
 	double m_minP;
 	double m_P1AU;
 	double m_Pmargin;
+	double m_DutyCycle = 1;
 };
 
 __KEP_TOOL_VISIBLE std::ostream &operator<<(std::ostream &s, const spacecraft &in );

@@ -124,6 +124,9 @@ BOOST_PYTHON_MODULE(_sims_flanagan) {
 		.add_property("Pmargin",&kep_toolbox::sims_flanagan::spacecraft::get_Pmargin, &kep_toolbox::sims_flanagan::spacecraft::set_Pmargin,
 			"The spacecraft power that cannot be given to the propulsion system (internal electrical consumption)\n\n"
 		)
+		.add_property("DutyCycle",&kep_toolbox::sims_flanagan::spacecraft::get_DutyCycle, &kep_toolbox::sims_flanagan::spacecraft::set_DutyCycle,
+			"The duty cycle of the propulsion, between 0 and 1 - it can be ON a maximum of DutyCycle of the time, and is approximated as Thrust = Thrust * DutyCycle\n\n"
+		)
 		.def("get_thrust_electricSolar", &kep_toolbox::sims_flanagan::spacecraft::get_thrust_electricSolar, "get max thrust at given distance in AU")	
 		.def("get_totalPower",  &kep_toolbox::sims_flanagan::spacecraft::get_totalPower)
 		.def("get_powerThrust",  &kep_toolbox::sims_flanagan::spacecraft::get_powerThrust)

@@ -424,20 +424,19 @@ protected:
 
 		//Forward Propagation
 		double current_time_fwd = t_i.mjd2000() * ASTRO_DAY2SEC;
-		for (int i = 0; i < n_seg_fwd; i++) {
-			if(m_sp){
-				// calculate low-thrust sun-powered max thurst based on sun distance at the beginning of the leg (forwards) to be coherent with taylor
-				dSun = rfwd[0]*rfwd[0]+rfwd[1]*rfwd[1]+rfwd[2]*rfwd[2];
-				dSun = sqrt(dSun);
-				max_thrust = m_sc.get_thrust_electricSolar(dSun);
-				//std::cout <<"max thrust = " << max_thrust  << " at " << dSun <<"AU"<< ".\n";
-			}
-			
+		for (int i = 0; i < n_seg_fwd; i++) {			
 			double thrust_duration = (throttles[i].get_end().mjd2000() -
 						  throttles[i].get_start().mjd2000()) * ASTRO_DAY2SEC;
 			double manouver_time = (throttles[i].get_start().mjd2000() +
 						throttles[i].get_end().mjd2000()) / 2. * ASTRO_DAY2SEC;
 			propagate_lagrangian(rfwd, vfwd, manouver_time - current_time_fwd, m_mu);
+			// calculate low-thrust sun-powered max thurst based on sun distance at the middle of the segment	
+			if(m_sp){	
+				dSun = rfwd[0]*rfwd[0]+rfwd[1]*rfwd[1]+rfwd[2]*rfwd[2];
+				dSun = sqrt(dSun);
+				max_thrust = m_sc.get_thrust_electricSolar(dSun);
+				//std::cout <<"max thrust = " << max_thrust  << " at " << dSun <<"AU"<< ".\n";
+			}	
 			current_time_fwd = manouver_time;
 			
 			
@@ -459,20 +458,20 @@ protected:
 
 		//Backward Propagation
 		double current_time_back = t_f.mjd2000() * ASTRO_DAY2SEC;
-		for (int i = 0; i < n_seg_back; i++) {
-			if(m_sp){
-				// calculate low-thrust sun-powered max thurst based on sun distance at the end of the leg (backwards) to be coherent with taylor
-				dSun = rback[0]*rback[0]+rback[1]*rback[1]+rback[2]*rback[2];
-				dSun = sqrt(dSun);
-				max_thrust = m_sc.get_thrust_electricSolar(dSun);
-			}
-			
+		for (int i = 0; i < n_seg_back; i++) {			
 			double thrust_duration = (throttles[throttles.size() - i - 1].get_end().mjd2000() -
 						  throttles[throttles.size() - i - 1].get_start().mjd2000()) * ASTRO_DAY2SEC;
 			double manouver_time = (throttles[throttles.size() - i - 1].get_start().mjd2000() +
 						throttles[throttles.size() - i - 1].get_end().mjd2000()) / 2. * ASTRO_DAY2SEC;
 			// manouver_time - current_time_back is negative, so this should propagate backwards
 			propagate_lagrangian(rback, vback, manouver_time - current_time_back, m_mu);
+			// calculate low-thrust sun-powered max thurst based on sun distance at the middle of the segment	
+			if(m_sp){	
+				dSun = rfwd[0]*rfwd[0]+rfwd[1]*rfwd[1]+rfwd[2]*rfwd[2];
+				dSun = sqrt(dSun);
+				max_thrust = m_sc.get_thrust_electricSolar(dSun);
+				//std::cout <<"max thrust = " << max_thrust  << " at " << dSun <<"AU"<< ".\n";
+			}			
 			current_time_back = manouver_time;
 
 			for (int j=0;j<3;j++){
@@ -524,7 +523,7 @@ protected:
 		//Forward Propagation
 		for (int i = 0; i < n_seg_fwd; i++) {
 			if(m_sp){
-				// calculate low-thrust sun-powered max thurst based on sun distance at the end of the leg (forwards)
+				// calculate low-thrust sun-powered max thurst based on sun distance at the beginning of the leg (forwards)
 				dSun = rfwd[0]*rfwd[0]+rfwd[1]*rfwd[1]+rfwd[2]*rfwd[2];
 				dSun = sqrt(dSun);
 				max_thrust = m_sc.get_thrust_electricSolar(dSun);
