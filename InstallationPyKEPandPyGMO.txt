@@ -1,0 +1,45 @@
+﻿On linux - if on windows:
+* download VitualBox
+* Make a new instance (blue “star”). Select linux, ubuntu-64bits (if 64 bits is not available, but only 32bits, it’s that intel virtualization has to be activated on the BIOS or UEFI)
+* Dowload ubuntu https://www.ubuntu.com/desktop
+* Perform an installation in the virtual machine - leave all settings to default (click next each time)
+PyKEP installation (from 
+):
+Git 
+sudo apt-get update
+Sudo apt-get install
+sudo  apt-get install git
+git clone https://github.com/esa/pykep.git
+cd pykep
+sudo apt-get install cmake
+sudo apt-get install libboost-all-dev
+sudo apt-get install aptitude
+mkdir build
+cd build
+sudo apt-get install cmake-curses-gui
+sudo ccmake ../
+
+
+Press [c] - go to BUILD_PYKEP and make sure it is activated (ON) - leave all other settings unchanged - press [c] - press [g] to generate.
+sudo make
+Wait.
+sudo make install
+sudo cp -r /usr/lib/python2.7/list-packages/PyKEP /usr/lib/python2.7/site-packages/
+Change the part in red with the location of the installation.
+ldconfig
+PyGMO installation
+Sortir du dossier PyKEP, pour revenir par exemple sur home (cd ../..)
+git clone https://github.com/esa/pagmo.git
+cd pagmo
+mkdir build
+cd build
+ccmake ../
+Activate BUILD_PYGMO, leave all other unchanged (make sure MAIN is OFF)
+make
+sudo make install
+Just like before, move the installed folder PyGMO to usr/lib/python2.7/site-packages/
+ldconfif 
+
+
+sudo apt-get install python-matplotlib
+sudo apt-get install python-numpy python-scipy
