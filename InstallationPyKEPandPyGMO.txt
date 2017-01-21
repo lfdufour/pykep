@@ -3,8 +3,7 @@
 * Make a new instance (blue “star”). Select linux, ubuntu-64bits (if 64 bits is not available, but only 32bits, it’s that intel virtualization has to be activated on the BIOS or UEFI)
 * Dowload ubuntu https://www.ubuntu.com/desktop
 * Perform an installation in the virtual machine - leave all settings to default (click next each time)
-PyKEP installation (from 
-):
+PyKEP installation:
 Git 
 sudo apt-get update
 Sudo apt-get install
