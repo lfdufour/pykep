@@ -3,7 +3,7 @@ from PyKEP.core import epoch, fb_con, EARTH_VELOCITY, AU, MU_SUN
 #from PyKEP.planet import jpl_lp
 from PyKEP import planet
 from PyKEP.sims_flanagan._sims_flanagan import leg, spacecraft, sc_state
-from motor_factory import getMotor
+from PyKEP.trajopt.motor import getMotor
 from scipy.linalg import norm
 
 class mga_return_lt_nep(base_problem):
@@ -86,7 +86,7 @@ class mga_return_lt_nep(base_problem):
         # First we call the constructor for the base PyGMO problem
         # As our problem is n dimensional, box-bounded (may be multi-objective), we write
         # (dim, integer dim, number of obj, number of con, number of inequality con, tolerance on con violation)
-        super(mga_return_lt_nep, self).__init__(dim, 0, f_dim, c_dim, c_ineq_dim, 1e-4)
+        super(_mga_return_lt_nep, self).__init__(dim, 0, f_dim, c_dim, c_ineq_dim, 1e-4)
 
         # 2) We then define some class data members
         # public:
@@ -426,13 +426,13 @@ class mga_return_lt_nep(base_problem):
         from PyKEP import epoch, AU
         from PyKEP.sims_flanagan import sc_state
         from PyKEP.orbit_plots import plot_planet, plot_sf_leg
-        from get_points import *
+        from PyKEP.orbit_plots import point_sf_leg, point_kepler, point_taylor, point_planet
         from scipy.linalg import norm
         from math import sqrt
         import csv
         import pprint
-        from motor_factory import getObjectMotor
-        from spacecraft_factory import getObjectSpacecraft
+        from PyKEP.trajopt.motor import getObjectMotor
+        from PyKEP.trajopt.spacecraft import getObjectSpacecraft
 
         XYZ = [];
         xx = []

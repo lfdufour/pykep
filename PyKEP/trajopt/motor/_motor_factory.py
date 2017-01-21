@@ -67,6 +67,12 @@ def addMotor(name, minP, minN, maxP, maxN, Isp, IspMin, IspMax):
 
 
 def createDB():
+
+	import json
+	with open('motorDB.json','w+') as data_file:
+		dataInit = {'filename':'motorDB.json'};
+		json.dump(dataInit, data_file);
+	data_file.close();
 	#NSTAR
 	addMotor(name='NSTAR', minP=500.0, minN=19e-3, maxP=2300.0, maxN=92e-3, Isp=2400.0, IspMin=1900.0, IspMax =3100.0)
 	#NEXT
