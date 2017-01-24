@@ -8,7 +8,7 @@ Git
 sudo apt-get update
 Sudo apt-get install
 sudo  apt-get install git
-git clone https://github.com/esa/pykep.git
+git clone https://github.com/lfdufour/pykep.git
 cd pykep
 sudo apt-get install cmake
 sudo apt-get install libboost-all-dev
