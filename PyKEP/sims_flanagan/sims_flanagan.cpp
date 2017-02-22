@@ -101,10 +101,14 @@ BOOST_PYTHON_MODULE(_sims_flanagan) {
 			"  sc.isp = 2000"
 			)
 		.add_property("aIsp",&kep_toolbox::sims_flanagan::spacecraft::get_aIsp, &kep_toolbox::sims_flanagan::spacecraft::set_aIsp,
-			""
+			"aIsp coefficient for the calculation of Isp as:\n\n"
+			"Isp = aIsp - bIsp/P"
+			"with P in Watts"
 			)
 		.add_property("bIsp",&kep_toolbox::sims_flanagan::spacecraft::get_bIsp, &kep_toolbox::sims_flanagan::spacecraft::set_bIsp,
-			""
+			"bIsp coefficient for the calculation of Isp as:\n\n"
+			"Isp = aIsp - bIsp/P"
+			"with P in Watts"
 			)
 		.add_property("AT",&kep_toolbox::sims_flanagan::spacecraft::get_AT, &kep_toolbox::sims_flanagan::spacecraft::set_AT,
 			"The spacecraft propulsion system thrust constant A\n\n"
@@ -134,6 +138,7 @@ BOOST_PYTHON_MODULE(_sims_flanagan) {
 			"The duty cycle of the propulsion, between 0 and 1 - it can be ON a maximum of DutyCycle of the time, and is approximated as Thrust = Thrust * DutyCycle\n\n"
 		)
 		.def("get_thrust_electricSolar", &kep_toolbox::sims_flanagan::spacecraft::get_thrust_electricSolar, "get max thrust at given distance in AU")	
+		.def("get_isp_electricSolar", &kep_toolbox::sims_flanagan::spacecraft::get_isp_electricSolar, "get isp for given power")	
 		.def("get_totalPower",  &kep_toolbox::sims_flanagan::spacecraft::get_totalPower)
 		.def("get_powerThrust",  &kep_toolbox::sims_flanagan::spacecraft::get_powerThrust)
 		.def_pickle(python_class_pickle_suite<kep_toolbox::sims_flanagan::spacecraft>())

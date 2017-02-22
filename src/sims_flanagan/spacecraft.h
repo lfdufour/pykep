@@ -87,10 +87,10 @@ public:
 	void set_DutyCycle(const double _DutyCycle) {m_DutyCycle = _DutyCycle;} 
 	
 	// Isp a a function of power
-	/*double get_isp(double powerIn) const{
+	double get_isp_electricSolar(double powerIn) const{
 		double ISP = m_aIsp - m_bIsp/powerIn;
 		return ISP;
-	}*/
+	}
 
 	// Function implementing thrust as a function of available power
 	double get_thrust_electricSolar(double distanceSun) const {
