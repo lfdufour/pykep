@@ -100,6 +100,12 @@ BOOST_PYTHON_MODULE(_sims_flanagan) {
 			"  T = sc.isp"
 			"  sc.isp = 2000"
 			)
+		.add_property("aIsp",&kep_toolbox::sims_flanagan::spacecraft::get_aIsp, &kep_toolbox::sims_flanagan::spacecraft::set_aIsp,
+			""
+			)
+		.add_property("bIsp",&kep_toolbox::sims_flanagan::spacecraft::get_bIsp, &kep_toolbox::sims_flanagan::spacecraft::set_bIsp,
+			""
+			)
 		.add_property("AT",&kep_toolbox::sims_flanagan::spacecraft::get_AT, &kep_toolbox::sims_flanagan::spacecraft::set_AT,
 			"The spacecraft propulsion system thrust constant A\n\n"
 			"Example::\n\n"

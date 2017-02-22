@@ -140,6 +140,7 @@ def point_sf_leg(leg, N=5, units=1, color='b'):
             if(sp):
                 dSun = sqrt(r[0]*r[0]+r[1]*r[1]+r[2]*r[2])
                 max_thrust = sc.get_thrust_electricSolar(dSun)
+                isp = isp;
 
             dV = [max_thrust / m * dt * dumb for dumb in t.value]
             xi,yi,zi,ti = point_kepler(r, v, dt / 2, mu, N=N, units=units)
@@ -187,6 +188,7 @@ def point_sf_leg(leg, N=5, units=1, color='b'):
             if(sp):
                 dSun = sqrt(r[0]*r[0]+r[1]*r[1]+r[2]*r[2])
                 max_thrust = sc.get_thrust_electricSolar(dSun)
+                isp = isp;
 
             u = [max_thrust * dumb for dumb in t.value]
             xi,yi,zi,ti,mi = point_taylor(r, v, m, u, dt , mu, isp * G0, N=N, units=units)
@@ -235,6 +237,7 @@ def point_sf_leg(leg, N=5, units=1, color='b'):
             if(sp):
                 dSun = sqrt(r[0]*r[0]+r[1]*r[1]+r[2]*r[2])
                 max_thrust = sc.get_thrust_electricSolar(dSun)
+                isp = isp;
 
             dV = [max_thrust / m * dt * dumb for dumb in t.value]
             xi,yi,zi,ti = point_kepler(r, v, -dt / 2, mu, N=N, units=units)
@@ -282,6 +285,7 @@ def point_sf_leg(leg, N=5, units=1, color='b'):
             if(sp):
                 dSun = sqrt(r[0]*r[0]+r[1]*r[1]+r[2]*r[2])
                 max_thrust = sc.get_thrust_electricSolar(dSun)
+                isp = isp;
 
             u = [max_thrust * dumb for dumb in t.value]
             xi,yi,zi,ti,mi = point_taylor(r, v, m, u, -dt , mu, isp * G0, N=N, units=units)

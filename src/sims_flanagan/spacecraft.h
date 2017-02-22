@@ -42,6 +42,7 @@ namespace sims_flanagan{
  * A container for system design parameters of a spacecraft.
  *
  * @author Dario Izzo (dario.izzo _AT_ googlemail.com)
+ * modified by Louis Dufour (lf.dufour _AT_ gmail.com)
  */
 
 
@@ -50,15 +51,21 @@ class __KEP_TOOL_VISIBLE spacecraft
 	friend std::ostream &operator<<(std::ostream &s, const spacecraft &in );
 public:
 	spacecraft():m_mass(0),m_thrust(0),m_isp(0), m_AT(0), m_BT(0), m_maxP(0), m_minP(0), m_Pmargin(0) {}
+
 	spacecraft(const double &mass_, const double &thrust_, const double &isp_) 
 		: m_mass(mass_), m_thrust(thrust_), m_isp(isp_), m_AT(0), m_BT(0), m_maxP(0), m_minP(0), m_Pmargin(0) {}
+
 	spacecraft(const double &mass_, const double &thrust_, const double &isp_,
 		  const double &AT_, const double &BT_, const double &maxP_,const double &minP_,
 		  const double &P1AU_, const double &Pmargin_) 
-		: m_mass(mass_),m_thrust(thrust_),m_isp(isp_), m_AT(AT_), m_BT(BT_), m_maxP(maxP_), m_minP(minP_),m_P1AU(P1AU_), m_Pmargin(Pmargin_) {}
+		: m_mass(mass_),m_thrust(thrust_),m_isp(isp_), m_AT(AT_), m_BT(BT_), m_maxP(maxP_), m_minP(minP_),m_P1AU(P1AU_), m_Pmargin(Pmargin_) {
+			m_aIsp = m_isp;
+		}
 	double get_mass() const {return m_mass;}
 	double get_thrust() const {return m_thrust;}
 	double get_isp() const {return m_isp;}
+	double get_aIsp() const {return m_aIsp;}
+	double get_bIsp() const {return m_bIsp;}
 	double get_AT() const {return m_AT;}
 	double get_BT() const {return m_BT;}
 	double get_maxP() const {return m_maxP;}
@@ -69,6 +76,8 @@ public:
 	void set_mass(const double _mass) {m_mass=_mass;}
 	void set_thrust(const double _thrust) {m_thrust=_thrust;}
 	void set_isp(const double _isp) {m_isp=_isp;}
+	void set_aIsp(const double _aIsp) {m_aIsp=_aIsp;}
+	void set_bIsp(const double _bIsp) {m_bIsp=_bIsp;}
 	void set_AT(const double _AT) {m_AT=_AT;}
 	void set_BT(const double _BT) {m_BT=_BT;}
 	void set_minP(const double _minP) {m_minP=_minP;}
@@ -77,6 +86,12 @@ public:
 	void set_Pmargin(const double _Pmargin) {m_Pmargin=_Pmargin;}
 	void set_DutyCycle(const double _DutyCycle) {m_DutyCycle = _DutyCycle;} 
 	
+	// Isp a a function of power
+	/*double get_isp(double powerIn) const{
+		double ISP = m_aIsp - m_bIsp/powerIn;
+		return ISP;
+	}*/
+
 	// Function implementing thrust as a function of available power
 	double get_thrust_electricSolar(double distanceSun) const {
 		// If necessary, convert the distance in AU -> detected if distance is greater than 0.1AU
@@ -131,7 +146,9 @@ private:
 		ar &  m_minP;
 		ar &  m_P1AU;
 		ar &  m_Pmargin;
-		ar & m_DutyCycle;
+		ar &  m_DutyCycle;
+		ar &  m_aIsp;
+		ar &  m_bIsp;
 	}
 // Serialization code (END)
 	double m_mass;
@@ -144,6 +161,8 @@ private:
 	double m_P1AU;
 	double m_Pmargin;
 	double m_DutyCycle = 1;
+	double m_aIsp;
+	double m_bIsp = 0;
 };
 
 __KEP_TOOL_VISIBLE std::ostream &operator<<(std::ostream &s, const spacecraft &in );

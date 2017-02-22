@@ -86,7 +86,7 @@ class mga_return_lt_nep(base_problem):
         # First we call the constructor for the base PyGMO problem
         # As our problem is n dimensional, box-bounded (may be multi-objective), we write
         # (dim, integer dim, number of obj, number of con, number of inequality con, tolerance on con violation)
-        super(_mga_return_lt_nep, self).__init__(dim, 0, f_dim, c_dim, c_ineq_dim, 1e-4)
+        super(mga_return_lt_nep, self).__init__(dim, 0, f_dim, c_dim, c_ineq_dim, 1e-4)
 
         # 2) We then define some class data members
         # public:
@@ -497,7 +497,7 @@ class mga_return_lt_nep(base_problem):
             data['legs']=data['legs']+[{'x':[e for e in xi],'y':[e for e in yi],'z':[e for e in zi],
             'm':[e for e in mi], 't':[e for e in ti],
             'P_tot':[sc.get_totalPower(norm(e)) for e in zip(xi,yi,zi)],
-            'P_engine':[sc.get_powerThrust(norm(e[0:3])*e[3]) for e in zip(Txi,Tyi,Tzi,Tmaxi)],
+            'P_engine':[sc.DutyCycle*sc.get_powerThrust(norm(e[0:3])*e[3]/sc.DutyCycle) for e in zip(Txi,Tyi,Tzi,Tmaxi)],
             'Tx':[e for e in Txi],'Ty':[e for e in Tyi],'Tz':[e for e in Tzi],'Tmax':[e for e in Tmaxi],
             'mi':minit,'mf':m0,'planet1':{'name':seq1[i].name,'date':t_P[i].jd},
             'planet2':{'name':seq1[i+1].name,'date':t_P[i+1].jd}}]   
@@ -532,7 +532,7 @@ class mga_return_lt_nep(base_problem):
             data['legs']=data['legs']+[{'x':[e for e in xi],'y':[e for e in yi],'z':[e for e in zi],
             'm':[e for e in mi], 't':[e for e in ti],
             'P_tot':[sc.get_totalPower(norm(e)) for e in zip(xi,yi,zi)],
-            'P_engine':[sc.get_powerThrust(norm(e[0:3])*e[3]) for e in zip(Txi,Tyi,Tzi,Tmaxi)],
+            'P_engine':[sc.DutyCycle*sc.get_powerThrust(norm(e[0:3])*e[3]/sc.DutyCycle) for e in zip(Txi,Tyi,Tzi,Tmaxi)],
             'Tx':[e for e in Txi],'Ty':[e for e in Tyi],'Tz':[e for e in Tzi],'Tmax':[e for e in Tmaxi],
             'mi':minit,'mf':m0,'planet1':{'name':seq2[i-len(seq1)-2].name,'date':t_P[i+1].jd},
             'planet2':{'name':seq2[i+1-len(seq1)-2].name,'date':t_P[i+2].jd}}]
@@ -578,6 +578,7 @@ class mga_return_lt_nep(base_problem):
         data['traj']['vinf'] = {'v_dep1':v_dep_1,'v_dep2':v_dep_2,'v_arr1':v_arr_1,'v_arr2':v_arr_2};
         data['traj']['spacecrafts'] = [getObjectSpacecraft(self.__spacecrafts[0]),
                     getObjectSpacecraft(self.__spacecrafts[1])]
+        data['traj']['duty_cycle'] = [self.__spacecrafts[0].DutyCycle, self.__spacecrafts[1].DutyCycle,];
         data['traj']['dm'] = self.__dm;
         data['traj']['mi'] = x[2];
         data['traj']['mf'] = self.__mf;
