@@ -14,6 +14,9 @@ class mga_return_lt_nep(base_problem):
 
     - Yam, C.H., di Lorenzo, D., and Izzo, D.,   Low-Thrust Trajectory Design as a Constrained Global Optimization Problem,  Proceedings of the Institution of Mechanical Engineers, Part G: Journal of Aerospace Engineering, 225(11), pp.1243-1251, 2011.
 
+    It describe a low-thrust mission to another celestial body, with a certain amount of time spent in the vicinity of 
+    this body, before coming back. It is the standard sample return mission using electrical propulsion.
+    
     The decision vector (chromosome) is::
 
       [t0] + [T1, mf1, Vxi1, Vyi1, Vzi1, Vxf1, Vyf1, Vzf1] + [T2, mf2, Vxi2, Vyi2, Vzi2, Vxf2, Vyf2, Vzf2] + ... + [throttles1] + [throttles2] + ...
@@ -422,6 +425,22 @@ class mga_return_lt_nep(base_problem):
     #    return y
 
     def point(self, x, filename):
+	"""
+	prob.point(decision_vector, filename)
+	
+	This method will save all the relevant simulation data for the trajectory described by decision_vector
+	in json form in the file 'filename.json'.
+	The data generated can then be used by the postprocessing toolbox (from this fork of PyKEP : PyKEP/postProcessingToolbox/), without having to
+	re-create a prob abject. Indeed, if the problem definition is changed, the decision_vector will not mean anything:
+	it only encode a trajectory for a very specific problem. When tens or hundreds of trajectories are generated, and 
+	then compared, keeping only the decision vector is not a good idea, if the parameters of the problems have been tweaked 
+	to realize those tens or hundreds of different simulations.
+	
+	The data stored in the file can be imported using import.json from the json package. The description of the stored data
+	has still to be described in detail
+	// TODO : description of the content of the .json file
+	Those files are to be given as parameters for the postprocessing toolbox.
+	"""
 
         from PyKEP import epoch, AU
         from PyKEP.sims_flanagan import sc_state
